@@ -34,9 +34,9 @@ In addition, the following asset sets represent methods for incorporating additi
 | $\mathcal{A}^{\text{max e}}_y$            | Energy assets with maximum outgoing energy method at year $y$ |          | $\mathcal{A}^{\text{max e}}_y \subseteq \mathcal{A}$                                             | This set contains assets that use the maximum outgoing energy method. Please visit the [how-to section](@ref max-min-outgoing-energy-setup) to learn how to set up this feature.                                                                                |
 | $\mathcal{A}^{\text{min e}}_y$            | Energy assets with minimum outgoing energy method at year $y$ |          | $\mathcal{A}^{\text{min e}} _y\subseteq \mathcal{A}$                                             | This set contains assets that use the minimum outgoing energy method. Please visit the [how-to section](@ref max-min-outgoing-energy-setup) to learn how to set up this feature.                                                                                |
 | $\mathcal{A}^{\text{uc}}_y$               | Energy assets with unit commitment method at year $y$         |          | $\mathcal{A}^{\text{uc}}_y  \subseteq \mathcal{A}^{\text{cv}} \cup \mathcal{A}^{\text{p}}$       | This set contains conversion and production assets that have a unit commitment method. Please visit the [how-to section](@ref unit-commitment-setup) to learn how to set up this feature.                                                                       |
-| $\mathcal{A}^{\text{uc basic}}_y$         | Energy assets with a basic unit commitment method at year $y$ |          | $\mathcal{A}^{\text{uc basic}}_y \subseteq \mathcal{A}^{\text{uc}}_y$                            | This set contains the assets that have a basic unit commitment method. Please visit the [how-to section](@ref unit-commitment-setup) to learn how to set up this feature.                                                                                       |
-| $\mathcal{A}^{\text{uc 3bin}}_y$          | Energy assets with a 3bin unit commitment method at year $y$  |          | $\mathcal{A}^{\text{uc 3bin}}_y \subseteq \mathcal{A}^{\text{uc}}_y$                             | This set contains the assets that have a unit commitment method with units on, as well as start-up and shut-down variables. Please visit the [how-to section](@ref unit-commitment-setup) to learn how to set up this feature.                                  |
-| $\mathcal{A}^{\text{su-sd compact}}_y$    | Energy assets with compact start-up and shut-down constraints at year $y$  |     | $\mathcal{A}^{\text{su-sd compact}}_y \subseteq \mathcal{A}^{\text{uc}}_y$               | This set contains the assets that have a unit commitment method with units on, as well as start-up and shut-down variables, using a compact set of logical constraints. Please visit the [how-to section](@ref unit-commitment-setup) to learn how to set up this feature. |
+| $\mathcal{A}^{\text{uc basic}}_y$         | Energy assets with a basic unit commitment method at year $y$ |          | $\mathcal{A}^{\text{uc basic}}_y \subseteq \mathcal{A}^{\text{uc}}_y$                            | This set contains the assets that have a basic unit commitment method that uses only the units on variable. Please visit the [how-to section](@ref unit-commitment-setup) to learn how to set up this feature.                                                                                       |
+| $\mathcal{A}^{\text{uc 3var}}_y$          | Energy assets with a 3var unit commitment method at year $y$  |          | $\mathcal{A}^{\text{uc 3var}}_y \subseteq \mathcal{A}^{\text{uc}}_y$                             | This set contains the assets that have a unit commitment method using three variables: units on, start-up, and shut-down. Please visit the [how-to section](@ref unit-commitment-setup) to learn how to set up this feature.                                                                                       |
+| $\mathcal{A}^{\text{su-sd compact}}_y$    | Energy assets with compact start-up and shut-down constraints at year $y$  |     | $\mathcal{A}^{\text{su-sd compact}}_y \subseteq \mathcal{A}^{\text{uc}}_y$               | This set contains the assets that have a unit commitment method using three variables: units on, start-up, and shut-down, along with a compact set of logical constraints. Please visit the [how-to section](@ref unit-commitment-setup) to learn how to set up this feature. |
 | $\mathcal{A}^{\text{ramp}}_y$             | Energy assets with ramping method at year $y$                 |          | $\mathcal{A}^{\text{ramp}}_y  \subseteq \mathcal{A}^{\text{cv}} \cup \mathcal{A}^{\text{p}}$     | This set contains conversion and production assets that have a ramping method. Please visit the [how-to section](@ref ramping-setup) to learn how to set up this feature.                                                                                       |
 | $\mathcal{A}^{\text{dc-opf}}_y$           | Energy assets with a DC power flow method at year $y$         |          | $\mathcal{A}^{\text{dc-opf}}_y \subseteq \mathcal{A}$                                            | This set contains the assets that have that use the dc-opf method.                                                                                                                                                                                              |
 
@@ -148,7 +148,7 @@ In addition, the following subsets represent methods for incorporating additiona
 
 | Name                                   | Domain           | Domains of Indices                                            | Description                                                       | Units           |
 | ---------------------------------------| ---------------- | --------------------------------------------------------------| ----------------------------------------------------------------- | --------------- |
-| $p^{\text{conversion eff}}_{a,y}$      | $\mathbb{R}_{+}$ | $a \in \mathcal{A^{\text{cv}}}$, $y \in \mathcal{Y}$          | Conversion efficiency of conversion asset $a$ at year $y$         | [p.u.]          |
+| $p^{\text{efficiency}}_{a,y}$      | $\mathbb{R}_{+}$ | $a \in \mathcal{A^{\text{cv}}}$, $y \in \mathcal{Y}$          | efficiency of conversion asset $a$ at year $y$         | [p.u.]          |
 
 #### Extra Parameters for Energy Constraints
 
@@ -249,8 +249,8 @@ In addition, the following subsets represent methods for incorporating additiona
 | $v^{\text{is charging}}_{a,k_y,b_{k_y}}$           | $\{0, 1\}$       | $a \in \mathcal{A}^{\text{sb}}_y$, $k_y \in \mathcal{K}_y$, $b_{k_y} \in \mathcal{B_{k_y}}$                                    | If an storage asset $a$ is charging or not in representative period $k_y$ and timestep block $b_{k_y}$                                | [-]     |
 | $v^{\text{angle}}_{a,k_y,b_{k_y}}$                 | $\mathbb{R}$     | $a \in \mathcal{A}^{\text{dc-opf}}_y$, $k_y \in \mathcal{K}_y$, $b_{k_y} \in \mathcal{B_{k_y}}$                                | Electricity angle of asset $a$ in representative period $k_y$ and timestep block $b_{k_y}$                                            | [rad]   |
 | $v^{\text{units on}}_{a,k_y,b_{k_y}}$              | $\mathbb{Z}_{+}$ | $a \in \mathcal{A}^{\text{uc}}_y$, $k_y \in \mathcal{K}_y$, $b_{k_y} \in \mathcal{B_{k_y}}$                                    | Number of units ON of asset $a$ in representative period $k_y$ and timestep block $b_{k_y}$                                           | [units] |
-| $v^{\text{start up}}_{a,k_y,b_{k_y}}$              | $\mathbb{Z}_{+}$ | $a \in \mathcal{A}^{\text{uc 3bin}}_y$, $k_y \in \mathcal{K}_y$, $b_{k_y} \in \mathcal{B_{k_y}}$                                    | Number of units of asset $a$ STARTING UP in representative period $k_y$ and timestep block $b_{k_y}$                                  | [units] |
-| $v^{\text{shut down}}_{a,k_y,b_{k_y}}$             | $\mathbb{Z}_{+}$ | $a \in \mathcal{A}^{\text{uc 3bin}}_y$, $k_y \in \mathcal{K}_y$, $b_{k_y} \in \mathcal{B_{k_y}}$                                    | Number of units of asset $a$ SHUTTING DOWN in representative period $k_y$ and timestep block $b_{k_y}$                                | [units] |
+| $v^{\text{start up}}_{a,k_y,b_{k_y}}$              | $\mathbb{Z}_{+}$ | $a \in \mathcal{A}^{\text{uc 3var}}_y$, $k_y \in \mathcal{K}_y$, $b_{k_y} \in \mathcal{B_{k_y}}$                               | Number of units of asset $a$ STARTING UP in representative period $k_y$ and timestep block $b_{k_y}$                                  | [units] |
+| $v^{\text{shut down}}_{a,k_y,b_{k_y}}$             | $\mathbb{Z}_{+}$ | $a \in \mathcal{A}^{\text{uc 3var}}_y$, $k_y \in \mathcal{K}_y$, $b_{k_y} \in \mathcal{B_{k_y}}$                               | Number of units of asset $a$ SHUTTING DOWN in representative period $k_y$ and timestep block $b_{k_y}$                                | [units] |
 
 ## [Objective Function](@id math-objective-function)
 
@@ -530,11 +530,11 @@ e^{\text{flow above min}}_{a,k_y,b_{k_y}} \geq 0  \quad
 
 ```math
 v^{\text{on}}_{a, k_y, b_{k_y}} - v^{\text{on}}_{a, k_y, (b_{k_y} - 1)} = v^{\text{start up}}_{a, k_y, b_{k_y}} - v^{\text{shut down}}_{a, k_y, b_{k_y}} \quad
-\\ \\ \forall y \in \mathcal{Y}, \forall a \in \mathcal{A}^{\text{uc 3bin}}_y, \forall k_y \in \mathcal{K}_y,\forall b_{k_y} \in \mathcal{B}_{k_y}
+\\ \\ \forall y \in \mathcal{Y}, \forall a \in \mathcal{A}^{\text{uc 3var}}_y, \forall k_y \in \mathcal{K}_y,\forall b_{k_y} \in \mathcal{B}_{k_y}
 \\ v^{\text{start up}}_{a, k_y, b_{k_y}} \leq v^{\text{on}}_{a, k_y, b_{k_y}} \quad
-\\ \\ \forall y \in \mathcal{Y}, \forall a \in \mathcal{A}^{\text{uc 3bin}}_y, \forall k_y \in \mathcal{K}_y,\forall b_{k_y} \in \mathcal{B}_{k_y}
+\\ \\ \forall y \in \mathcal{Y}, \forall a \in \mathcal{A}^{\text{uc 3var}}_y, \forall k_y \in \mathcal{K}_y,\forall b_{k_y} \in \mathcal{B}_{k_y}
 \\ v^{\text{shut down}}_{a, k_y, b_{k_y}} \leq v^{\text{available units}}_{a,y} - v^{\text{on}}_{a, k_y, b_{k_y}} \quad
-\\ \\ \forall y \in \mathcal{Y}, \forall a \in \mathcal{A}^{\text{uc 3bin}}_y, \forall k_y \in \mathcal{K}_y,\forall b_{k_y} \in \mathcal{B}_{k_y}
+\\ \\ \forall y \in \mathcal{Y}, \forall a \in \mathcal{A}^{\text{uc 3var}}_y, \forall k_y \in \mathcal{K}_y,\forall b_{k_y} \in \mathcal{B}_{k_y}
 ```
 
 #### Compact logical constraints for start-up and shut-down variables
@@ -760,7 +760,7 @@ v^{\text{over-clustered-year-storage}}_{a,s,p^{\text{last}}_y} \geq p^{\text{ini
 
 ```math
 \begin{aligned}
-p^{\text{conversion eff}}_{a,y} \cdot & \sum_{f \in \mathcal{F}^{\text{in}}_{a,y}} p^{\text{conversion coefficient}}_{f,y} \cdot v^{\text{flow}}_{f,k_y,b_{k_y}} =  \\
+p^{\text{efficiency}}_{a,y} \cdot & \sum_{f \in \mathcal{F}^{\text{in}}_{a,y}} p^{\text{conversion coefficient}}_{f,y} \cdot v^{\text{flow}}_{f,k_y,b_{k_y}} =  \\
 & \sum_{f \in \mathcal{F}^{\text{out}}_{a,y}} p^{\text{conversion coefficient}}_{f,y} \cdot v^{\text{flow}}_{f,k_y,b_{k_y}} \\
 & \quad \forall y \in \mathcal{Y}, \forall a \in \mathcal{A}^{\text{cv}}, \forall k_y \in \mathcal{K}_y,\forall b_{k_y} \in \mathcal{B_{k_y}}
 \end{aligned}
