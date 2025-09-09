@@ -1,22 +1,22 @@
-export add_shut_down_lower_bound_constraints!
+export add_start_up_lower_bound_constraints!
 
 """
-    add_shut_down_lower_bound_constraints!(connection, model, variables, expressions, constraints)
+    add_start_up_lower_bound_constraints!(connection, model, variables, expressions, constraints)
 
-Adds the shut_down(b) >= units_on(B(b - 1)) - units_on(B(b)) constraints to the model.
+Adds the scompact start up constraints to the model.
 """
-function add_shut_down_lower_bound_constraints!(
+function add_start_up_lower_bound_constraints!(
     connection,
     model,
     variables,
     expressions,
     constraints,
 )
-    let table_name = :shut_down_lower_bound, cons = constraints[table_name]
+    let table_name = :start_up_lower_bound, cons = constraints[table_name]
         units_on = variables[:units_on].container
-        shut_down = variables[:shut_down].container
+        start_up = variables[:start_up].container
 
-        indices = _append_variable_ids(connection, table_name, ["units_on", "shut_down"])
+        indices = _append_variable_ids(connection, table_name, ["units_on", "start_up"])
 
         attach_constraint!(
             model,
@@ -29,8 +29,8 @@ function add_shut_down_lower_bound_constraints!(
                     else
                         @constraint(
                             model,
-                            units_on[row.units_on_id-1] - units_on[row.units_on_id] <=
-                            shut_down[row.shut_down_id],
+                            units_on[row.units_on_id] - units_on[row.units_on_id-1] <=
+                            start_up[row.start_up_id],
                             base_name = "$table_name[$(row.asset),$(row.year),$(row.rep_period),$(row.time_block_start):$(row.time_block_end)]"
                         )
                     end
