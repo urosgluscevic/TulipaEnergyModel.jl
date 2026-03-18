@@ -192,12 +192,13 @@ function add_su_sd_ramping_constraints_tight!(
                         min_outgoing_flow_duration,
                     )
 
+                    pmax = profile_times_capacity[table_name][row.id]
+
                     @constraint(
                         model,
                         cons.expressions[:outgoing][row.id] ≤
-                        (start_up_avg * units_on[row.id]) +
-                        (profile_times_capacity[table_name][row.id] - start_up_avg) *
-                        units_on[row.id-1],
+                        min(pmax, start_up_avg) * units_on[row.id] +
+                        (pmax - min(pmax, start_up_avg)) * units_on[row.id-1],
                         base_name = "$table_name[$(row.asset),$(row.year),$(row.rep_period),$(row.time_block_start):$(row.time_block_end)]"
                     )
                 end for (row, min_outgoing_flow_duration) in
@@ -225,12 +226,13 @@ function add_su_sd_ramping_constraints_tight!(
                         cons.coefficients[:min_outgoing_flow_duration][row.id-1],
                     )
 
+                    pmax = profile_times_capacity[table_name][row.id]
+
                     @constraint(
                         model,
                         cons.expressions[:outgoing][row.id-1] ≤
                         (shut_down_avg * units_on[row.id-1]) +
-                        (profile_times_capacity[table_name][row.id-1] - shut_down_avg) *
-                        units_on[row.id],
+                        (pmax - shut_down_avg) * units_on[row.id],
                         base_name = "$table_name[$(row.asset),$(row.year),$(row.rep_period),$(row.time_block_start):$(row.time_block_end)]"
                     )
                 end for row in indices
