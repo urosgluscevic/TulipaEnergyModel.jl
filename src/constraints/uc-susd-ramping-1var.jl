@@ -226,7 +226,7 @@ function add_su_sd_ramping_constraints_tight!(
                         cons.coefficients[:min_outgoing_flow_duration][row.id-1],
                     )
 
-                    pmax = profile_times_capacity[table_name][row.id]
+                    pmax = profile_times_capacity[table_name][row.id-1]
 
                     @constraint(
                         model,
