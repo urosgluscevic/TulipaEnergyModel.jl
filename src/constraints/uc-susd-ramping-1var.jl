@@ -197,8 +197,8 @@ function add_su_sd_ramping_constraints_tight!(
                     @constraint(
                         model,
                         cons.expressions[:outgoing][row.id] ≤
-                        min(pmax, start_up_avg) * units_on[row.id] +
-                        (pmax - min(pmax, start_up_avg)) * units_on[row.id-1],
+                        start_up_avg * units_on[row.id] +
+                        (pmax - start_up_avg) * units_on[row.id-1],
                         base_name = "$table_name[$(row.asset),$(row.year),$(row.rep_period),$(row.time_block_start):$(row.time_block_end)]"
                     )
                 end for (row, min_outgoing_flow_duration) in
