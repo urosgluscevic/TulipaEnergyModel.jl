@@ -38,7 +38,7 @@ energy_problem = run_scenario(
     conn;
     model_file_name = "model.lp",
     log_file = "log_file.log",
-    output_folder = joinpath(pwd(), "debugging", "outputs"),
+    output_folder = joinpath(pwd(), "debugging", "outputs", "month"),
 )
 
 # FILL_IN,producer,,FILL_IN,FILL_IN,simple,true,15,15,0.05,==,0.0,false,,true,FILL_IN,true,true,false,0.0,false,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN
