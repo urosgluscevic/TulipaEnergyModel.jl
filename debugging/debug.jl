@@ -3,7 +3,7 @@ using DuckDB
 using TulipaIO
 
 in_folder = joinpath(pwd(), "test/inputs")
-# in_folder = joinpath(pwd(), "debugging/experiment-inputs")
+in_folder = joinpath(pwd(), "debugging/experiment-inputs")
 # bench_folder = joinpath(pwd(), "debugging")
 
 # in_dir = joinpath(in_folder, "Multi-year Investments")
@@ -11,6 +11,7 @@ in_folder = joinpath(pwd(), "test/inputs")
 # in_dir = joinpath(in_folder, "all-susd")
 # in_dir = joinpath(in_folder, "UC-ramping")
 in_dir = joinpath(in_folder, "case-study")
+in_dir = joinpath(in_folder, "trajectories-feas")
 # in_dir = joinpath(bench_folder, "EU")
 
 # Conversion
@@ -38,7 +39,7 @@ energy_problem = run_scenario(
     conn;
     model_file_name = "model.lp",
     log_file = "log_file.log",
-    output_folder = joinpath(pwd(), "debugging", "outputs", "month"),
+    # output_folder = joinpath(pwd(), "debugging", "outputs", "month"),
 )
 
 # FILL_IN,producer,,FILL_IN,FILL_IN,simple,true,15,15,0.05,==,0.0,false,,true,FILL_IN,true,true,false,0.0,false,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN,FILL_IN
