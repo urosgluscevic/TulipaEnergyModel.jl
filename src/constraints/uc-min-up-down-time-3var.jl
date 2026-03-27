@@ -50,7 +50,7 @@ function _sum_min_up_blocks(sum_rows, start_ups, start_of_curr_constraint)
     for single_row in sum_rows
         start_of_this = single_row.time_block_start
         minimum_up_time = single_row.minimum_up_time
-        if (
+        if ( # TODO: This can also be optimized similarly to trajectories
             start_of_curr_constraint - minimum_up_time + 1 <=
             start_of_this <=
             start_of_curr_constraint
