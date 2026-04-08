@@ -1,5 +1,12 @@
 export add_trajectory_constraints!
 
+struct TrajectoryData
+    su_trajectory::Vector{Float64}
+    sd_trajectory::Vector{Float64}
+    su_length::Int
+    sd_length::Int
+end
+
 """
     add_trajectory_constraints!(model, constraints)
 Adds the start up trajectory constraints to the model.
@@ -31,52 +38,52 @@ function add_trajectory_constraints!(
         # Read trajectory data
         asset_trajectory_info = _get_trajectory_info(connection)
 
-        # Holds assetname -> ((su_trajectory, su_length), (sd_trajectory, sd_length))
-        trajectories_info = Dict{String,Dict{String,Union{Vector{Float64},Int}}}()
+        # Holds assetname -> TrajectoryData
+        trajectories_info = Dict{String,TrajectoryData}()
 
         for asset_row in asset_trajectory_info
-            trajectories_info[asset_row.asset] = Dict{String,Union{Vector{Float64},Int}}()
-
-            trajectories_info[asset_row.asset]["su_trajectory"] = read_trajectory(
+            su_traj = read_trajectory(
                 asset_row.start_trajectory,
                 asset_row.min_operating_point * asset_row.capacity,
             )
-
-            trajectories_info[asset_row.asset]["sd_trajectory"] = read_trajectory(
+            sd_traj = read_trajectory(
                 asset_row.shut_trajectory,
                 asset_row.min_operating_point * asset_row.capacity,
                 true,
             )
-
-            trajectories_info[asset_row.asset]["su_length"] =
-                length(trajectories_info[asset_row.asset]["su_trajectory"])
-            trajectories_info[asset_row.asset]["sd_length"] =
-                length(trajectories_info[asset_row.asset]["sd_trajectory"])
+            trajectories_info[asset_row.asset] =
+                TrajectoryData(su_traj, sd_traj, length(su_traj), length(sd_traj))
         end
 
-        """
-        The idea here is to precompute the term representing the trajectories' contributions in the constraints for each timeblock.
-        Since it will be the exact same in both constraints, we can compute it just once, and use it for both.
-        """
         trajectories_term = [
             let t_start = row.time_block_start, t_end = row.time_block_end
-                p_su_trajectory = trajectories_info[row.asset]["su_trajectory"]
-                p_sd_trajectory = trajectories_info[row.asset]["sd_trajectory"]
-                su_length = trajectories_info[row.asset]["su_length"]
-                sd_length = trajectories_info[row.asset]["sd_length"]
+                p_su_trajectory = trajectories_info[row.asset].su_trajectory
+                p_sd_trajectory = trajectories_info[row.asset].sd_trajectory
+                su_length = trajectories_info[row.asset].su_length
+                sd_length = trajectories_info[row.asset].sd_length
 
-                su_var_ids =
-                    _find_relevant_su_var_ids(connection, row.asset, row.year, row.rep_period)
-                sd_var_ids =
-                    _find_relevant_sd_var_ids(connection, row.asset, row.year, row.rep_period)
+                su_var_ids = _find_relevant_su_var_ids(
+                    connection,
+                    row.asset,
+                    row.year,
+                    row.rep_period,
+                    row.time_block_start,
+                    su_length,
+                )
+                sd_var_ids = _find_relevant_sd_var_ids(
+                    connection,
+                    row.asset,
+                    row.year,
+                    row.rep_period,
+                    row.time_block_start,
+                    sd_length,
+                )
 
                 # For every start_up and every shut_down variable, check their contributions and add them to the term
                 term = JuMP.AffExpr(0.0)
-                for (su_row, sd_row) in zip(su_var_ids, sd_var_ids)
-                    su_id    = su_row.start_up_id
+                for su_row in su_var_ids
+                    su_id = su_row.start_up_id
                     su_start = su_row.start_up_start
-                    sd_id    = sd_row.shut_down_id
-                    sd_start = sd_row.shut_down_start
 
                     # Include contribution for every timestep within a trajectory length from the start of the start_up variable
                     p_up_traj = [
@@ -86,6 +93,17 @@ function add_trajectory_constraints!(
                             0
                         end for i in 1:su_length
                     ]
+
+                    JuMP.add_to_expression!(
+                        term,
+                        1,
+                        variables[:start_up].container[su_id] * sum(p_up_traj),
+                    )
+                end
+                for sd_row in sd_var_ids
+                    sd_id    = sd_row.shut_down_id
+                    sd_start = sd_row.shut_down_start
+
                     # Include contribution for every timestep within a trajectory length from the start of the shut_down variable
                     p_down_traj = [
                         if t_start - i <= sd_start && sd_start <= t_end - i
@@ -98,7 +116,6 @@ function add_trajectory_constraints!(
                     JuMP.add_to_expression!(
                         term,
                         1,
-                        variables[:start_up].container[su_id] * sum(p_up_traj) +
                         variables[:shut_down].container[sd_id] * sum(p_down_traj),
                     )
                 end
@@ -130,25 +147,25 @@ function _append_data_to_trajectory(connection)
         "
         SELECT
             cons.*,
-            asset.min_operating_point     AS min_op_point,
-            asset.capacity          AS capacity,
-            profiles.profile_name   AS profile_name,
+            asset.min_operating_point   AS min_op_point,
+            asset.capacity              AS capacity,
+            profiles.profile_name       AS profile_name,
         FROM cons_susd_trajectory AS cons
         LEFT JOIN asset AS asset
             ON cons.asset = asset.asset
-        LEFT JOIN assets_profiles as profiles
+        LEFT JOIN assets_profiles AS profiles
             ON cons.asset = profiles.asset
             AND cons.year = profiles.commission_year
             AND profiles.profile_type = 'availability'
-        LEFT JOIN asset_time_resolution_rep_period AS atr
-            ON  cons.asset = atr.asset
-            AND cons.year = atr.year
-            AND cons.rep_period = atr.rep_period
-            AND cons.time_block_start >= atr.time_block_start
-            AND cons.time_block_end <= atr.time_block_end
         ORDER BY cons.id
-        ",
+            ",
     )
+    # LEFT JOIN asset_time_resolution_rep_period AS atr
+    #     ON  cons.asset = atr.asset
+    #     AND cons.year = atr.year
+    #     AND cons.rep_period = atr.rep_period
+    #     AND cons.time_block_start >= atr.time_block_start
+    #     AND cons.time_block_end <= atr.time_block_end
 end
 
 function _get_trajectory_info(connection)
@@ -170,7 +187,8 @@ function _get_trajectory_info(connection)
     )
 end
 
-function _find_relevant_su_var_ids(connection, asset, year, rep_period)
+function _find_relevant_su_var_ids(connection, asset, year, rep_period, time_block_start, su_length)
+    # Filter here already for only the possibly relevant su variables
     return DuckDB.query(
         connection,
         "
@@ -182,21 +200,26 @@ function _find_relevant_su_var_ids(connection, asset, year, rep_period)
             start_up.id AS start_up_id,
             start_up.time_block_start AS start_up_start,
         FROM cons_susd_trajectory AS cons
-        JOIN var_start_up AS start_up
+        LEFT JOIN var_start_up AS start_up
             ON cons.asset = start_up.asset
             AND cons.year = start_up.year
             AND cons.rep_period = start_up.rep_period
             AND cons.time_block_start = start_up.time_block_start
+        LEFT JOIN asset AS asset
+            ON cons.asset = asset.asset
         WHERE
             cons.asset = '$asset'
             AND cons.year = '$year'
             AND cons.rep_period = '$rep_period'
+            AND start_up.time_block_start <= $time_block_start + $su_length
+            AND start_up.time_block_start >= $time_block_start
         ORDER BY cons.id
         ",
     )
 end
 
-function _find_relevant_sd_var_ids(connection, asset, year, rep_period)
+function _find_relevant_sd_var_ids(connection, asset, year, rep_period, time_block_start, sd_length)
+    # Filter here already for only the possibly relevant sd variables
     return DuckDB.query(
         connection,
         "
@@ -208,7 +231,7 @@ function _find_relevant_sd_var_ids(connection, asset, year, rep_period)
             shut_down.id AS shut_down_id,
             shut_down.time_block_start AS shut_down_start,
         FROM cons_susd_trajectory AS cons
-        JOIN var_shut_down AS shut_down
+        LEFT JOIN var_shut_down AS shut_down
             ON cons.asset = shut_down.asset
             AND cons.year = shut_down.year
             AND cons.rep_period = shut_down.rep_period
@@ -217,6 +240,8 @@ function _find_relevant_sd_var_ids(connection, asset, year, rep_period)
             cons.asset = '$asset'
             AND cons.year = '$year'
             AND cons.rep_period = '$rep_period'
+            AND shut_down.time_block_start < $time_block_start
+            AND shut_down.time_block_start >= $time_block_start - $sd_length
         ORDER BY cons.id
         ",
     )
