@@ -36,7 +36,7 @@ metrics = [
     "model_create_time_std",
     "model_solve_time_std",
 ]
-experiment_inputs_dir = "debugging/experiment-inputs"
+experiment_inputs_dir = "debugging/experiment-inputs/single-country"
 experiment_results_dir = "debugging/experiment-results"
 
 # after how many seconds to stop taking samples (at least one sample will always be taken)
@@ -66,7 +66,7 @@ case_studies_to_run = [
 
 # number of samples to run
 create_model_num_samples = 1
-run_model_num_samples = 10
+run_model_num_samples = 3
 
 # this should be kept to 1
 create_model_num_evals = 1
