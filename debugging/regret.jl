@@ -39,8 +39,6 @@ function input_setup_regret(input_folder)
 end
 
 function regret_calculation(case, reference_objective)
-    # case = "1var-0"
-
     input_folder = joinpath(pwd(), "$experiment_inputs_dir/$case")
 
     connection = input_setup_regret(input_folder)
