@@ -124,8 +124,28 @@ end
 
 metrics_dict = Dict()
 
+connection = input_setup_regret("$experiment_inputs_dir/3var-E3")
+
+energy_problem_E3 = EnergyProblem(connection)
+create_model!(energy_problem_E3)
+solve_model!(energy_problem_E3)
+
+computed_baseline = energy_problem_E3.objective_value
+
+println(computed_baseline - reference_objective)
+
+save_solution!(energy_problem_E3)
+
+investments_made = get_table(connection, "var_assets_investment")[:, [:asset, :solution]]
+investments_made.solution = round.(investments_made.solution)
+
+CSV.write(
+    "$experiment_results_dir/investment-solutions/3var-E3-investments.csv",
+    DataFrame(investments_made),
+)
+
 for case in cases
-    metrics_dict[case] = regret_calculation(case, reference_objective)
+    metrics_dict[case] = regret_calculation(case, computed_baseline)
 end
 
 write_results_regret(metrics_dict)
