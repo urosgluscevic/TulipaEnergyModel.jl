@@ -1,0 +1,9 @@
+asset,commission_year,profile_type,profile_name
+NL_OnWind,2030,availability,NL_Wind_Onshore
+NL_OffWind,2030,availability,NL_Wind_Offshore
+NL_Solar,2030,availability,NL_Solar
+BE_OnWind,2030,availability,BE_Wind_Onshore
+BE_OffWind,2030,availability,BE_Wind_Offshore
+BE_Solar,2030,availability,BE_Solar
+NL_demand,2030,demand,NL_E_Demand
+BE_demand,2030,demand,BE_E_Demand
