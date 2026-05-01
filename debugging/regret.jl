@@ -6,7 +6,7 @@ using Gurobi
 using DataFrames
 using CSV
 
-experiment_inputs_dir = "debugging/experiment-inputs/single-country"
+experiment_inputs_dir = "debugging/experiment-inputs/multiple-countries"
 experiment_results_dir = "debugging/experiment-results"
 reference_objective = 2338362.08463463
 
