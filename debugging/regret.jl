@@ -8,22 +8,22 @@ using CSV
 
 experiment_inputs_dir = "debugging/experiment-inputs/multiple-countries"
 experiment_results_dir = "debugging/experiment-results"
-reference_objective = 2338362.08463463
+# reference_objective = 2338362.08463463
 
 # bla
 
 cases = [
     "1var-0",
     "1var-E1C",
-    "1var-E1CT",
+    # "1var-E1CT",
     "1var-E2C",
-    "1var-E2CT",
+    # "1var-E2CT",
     "2var-0C",
-    "2var-0T",
+    # "2var-0T",
     "2var-E1",
     "2var-E2",
-    "3var-0C",
-    "3var-0T",
+    # "3var-0C",
+    # "3var-0T",
     "3var-0N",
     "3var-E1",
     "3var-E2",
@@ -134,7 +134,7 @@ solve_model!(energy_problem_E3)
 
 computed_baseline = energy_problem_E3.objective_value
 
-println(computed_baseline - reference_objective)
+# println(computed_baseline - reference_objective)
 
 save_solution!(energy_problem_E3)
 
@@ -145,6 +145,8 @@ CSV.write(
     "$experiment_results_dir/investment-solutions/3var-E3-investments.csv",
     DataFrame(investments_made),
 )
+
+metrics_dict["3var-E3"] = [computed_baseline, 0, 0]
 
 for case in cases
     metrics_dict[case] = regret_calculation(case, computed_baseline)
