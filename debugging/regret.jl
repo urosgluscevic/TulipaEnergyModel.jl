@@ -6,7 +6,8 @@ using Gurobi
 using DataFrames
 using CSV
 
-experiment_inputs_dir = "debugging/experiment-inputs/multiple-countries"
+# experiment_inputs_dir = "debugging/experiment-inputs/multiple-countries"
+experiment_inputs_dir = "debugging/experiment-inputs/single-country"
 experiment_results_dir = "debugging/experiment-results"
 # reference_objective = 2338362.08463463
 
@@ -18,15 +19,15 @@ cases = [
     # "1var-E1CT",
     "1var-E2C",
     # "1var-E2CT",
-    "2var-0C",
+    # "2var-0C",
     # "2var-0T",
-    "2var-E1",
-    "2var-E2",
+    # "2var-E1",
+    # "2var-E2",
     # "3var-0C",
-    # "3var-0T",
-    "3var-0N",
+    "3var-0T",
+    # "3var-0N",
     "3var-E1",
-    "3var-E2",
+    # "3var-E2",
 ]
 # DB connection helper
 function input_setup_regret(input_folder)
@@ -126,7 +127,7 @@ end
 
 metrics_dict = Dict()
 
-connection = input_setup_regret("$experiment_inputs_dir/3var-E3")
+connection = input_setup_regret("$experiment_inputs_dir/3var-E2")
 
 energy_problem_E3 = EnergyProblem(connection)
 create_model!(energy_problem_E3)
@@ -142,11 +143,11 @@ investments_made = get_table(connection, "var_assets_investment")[:, [:asset, :s
 investments_made.solution = round.(investments_made.solution)
 
 CSV.write(
-    "$experiment_results_dir/investment-solutions/3var-E3-investments.csv",
+    "$experiment_results_dir/investment-solutions/3var-E2-investments.csv",
     DataFrame(investments_made),
 )
 
-metrics_dict["3var-E3"] = [computed_baseline, 0, 0]
+metrics_dict["3var-E2"] = [computed_baseline, 0, 0]
 
 for case in cases
     metrics_dict[case] = regret_calculation(case, computed_baseline)
