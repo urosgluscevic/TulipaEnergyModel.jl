@@ -96,6 +96,17 @@ function regret_calculation(case, reference_objective, dem, wind, sol)
 
     CSV.write("$input_folder_baseline/asset-both.csv", asset_both_df)
 
+    asset_milestone_df = DataFrame(CSV.File("$input_folder_baseline/asset-milestone.csv"))
+    asset_milestone_df[asset_milestone_df.asset.=="demand", :peak_demand] .= dem
+
+    asset_comm_df = DataFrame(CSV.File("$input_folder_baseline/asset-commission.csv"))
+    asset_comm_df[asset_milestone_df.asset.=="OnWind", :investment_limit] .= wind
+    asset_comm_df[asset_milestone_df.asset.=="OffWind", :investment_limit] .= wind
+    asset_comm_df[asset_milestone_df.asset.=="Solar", :investment_limit] .= sol
+
+    CSV.write("$input_folder_baseline/asset-milestone.csv", asset_milestone_df)
+    CSV.write("$input_folder_baseline/asset-commission.csv", asset_comm_df)
+
     DBInterface.close!(connection)
 
     connection = input_setup_regret(input_folder_baseline)
