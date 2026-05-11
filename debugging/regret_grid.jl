@@ -13,7 +13,7 @@ experiment_results_dir = "debugging/experiment-results"
 
 peak_demands = [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]
 wind_limits = [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000]
-solar_limits = wind_limits .\ 2
+solar_limits = wind_limits ./ 2
 
 cases = [
     "1var-0",
