@@ -29,7 +29,7 @@ cases = [
     "3var-0T",
     # "3var-0N",
     "3var-E1",
-    # "3var-E2",
+    "3var-E2",
 ]
 # DB connection helper
 function input_setup_regret(input_folder)
@@ -174,7 +174,7 @@ for i in 1:length(peak_demands)
 
         metrics_dict = Dict()
 
-        connection = input_setup_regret("$experiment_inputs_dir/3var-E2")
+        connection = input_setup_regret("$experiment_inputs_dir/3var-E3")
 
         energy_problem_E3 = EnergyProblem(connection)
         create_model!(energy_problem_E3)
@@ -190,11 +190,11 @@ for i in 1:length(peak_demands)
         investments_made.solution = round.(investments_made.solution)
 
         CSV.write(
-            "$experiment_results_dir/investment-solutions/3var-E2-investments-$dem-$wind-$sol.csv",
+            "$experiment_results_dir/investment-solutions/3var-E3-investments-$dem-$wind-$sol.csv",
             DataFrame(investments_made),
         )
 
-        metrics_dict["3var-E2"] = [computed_baseline, 0, 0]
+        metrics_dict["3var-E3"] = [computed_baseline, 0, 0]
 
         for case in cases
             input_folder_baseline = joinpath(pwd(), "$experiment_inputs_dir/$case")
