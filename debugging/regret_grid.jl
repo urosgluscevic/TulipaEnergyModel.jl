@@ -43,7 +43,16 @@ function input_setup_regret(input_folder)
     return connection
 end
 
-function regret_calculation(case, reference_objective, dem, wind, sol)
+function regret_calculation(
+    case,
+    reference_objective,
+    dem,
+    wind,
+    sol,
+    peak_demand,
+    wind_limit,
+    solar_limit,
+)
     input_folder = joinpath(pwd(), "$experiment_inputs_dir/$case")
 
     connection = input_setup_regret(input_folder)
@@ -97,12 +106,12 @@ function regret_calculation(case, reference_objective, dem, wind, sol)
     CSV.write("$input_folder_baseline/asset-both.csv", asset_both_df)
 
     asset_milestone_df = DataFrame(CSV.File("$input_folder_baseline/asset-milestone.csv"))
-    asset_milestone_df[asset_milestone_df.asset.=="demand", :peak_demand] .= dem
+    asset_milestone_df[asset_milestone_df.asset.=="demand", :peak_demand] .= peak_demand
 
     asset_comm_df = DataFrame(CSV.File("$input_folder_baseline/asset-commission.csv"))
-    asset_comm_df[asset_milestone_df.asset.=="OnWind", :investment_limit] .= wind
-    asset_comm_df[asset_milestone_df.asset.=="OffWind", :investment_limit] .= wind
-    asset_comm_df[asset_milestone_df.asset.=="Solar", :investment_limit] .= sol
+    asset_comm_df[asset_milestone_df.asset.=="OnWind", :investment_limit] .= wind_limit
+    asset_comm_df[asset_milestone_df.asset.=="OffWind", :investment_limit] .= wind_limit
+    asset_comm_df[asset_milestone_df.asset.=="Solar", :investment_limit] .= solar_limit
 
     CSV.write("$input_folder_baseline/asset-milestone.csv", asset_milestone_df)
     CSV.write("$input_folder_baseline/asset-commission.csv", asset_comm_df)
@@ -162,6 +171,8 @@ end
 
 # metrics_dict["3var-E2"] = [computed_baseline, 0, 0]
 
+regret_baseline_name = "3var-E3"
+
 for i in 1:length(peak_demands)
     for j in 1:length(wind_limits)
         peak_demand = peak_demands[i]
@@ -174,7 +185,20 @@ for i in 1:length(peak_demands)
 
         metrics_dict = Dict()
 
-        connection = input_setup_regret("$experiment_inputs_dir/3var-E3")
+        input_folder_baseline = joinpath(pwd(), "$experiment_inputs_dir/$regret_baseline_name")
+
+        asset_milestone_df = DataFrame(CSV.File("$input_folder_baseline/asset-milestone.csv"))
+        asset_milestone_df[asset_milestone_df.asset.=="demand", :peak_demand] .= peak_demand
+
+        asset_comm_df = DataFrame(CSV.File("$input_folder_baseline/asset-commission.csv"))
+        asset_comm_df[asset_milestone_df.asset.=="OnWind", :investment_limit] .= wind_limit
+        asset_comm_df[asset_milestone_df.asset.=="OffWind", :investment_limit] .= wind_limit
+        asset_comm_df[asset_milestone_df.asset.=="Solar", :investment_limit] .= solar_limit
+
+        CSV.write("$input_folder_baseline/asset-milestone.csv", asset_milestone_df)
+        CSV.write("$input_folder_baseline/asset-commission.csv", asset_comm_df)
+
+        connection = input_setup_regret("$experiment_inputs_dir/$regret_baseline_name")
 
         energy_problem_E3 = EnergyProblem(connection)
         create_model!(energy_problem_E3)
@@ -190,11 +214,11 @@ for i in 1:length(peak_demands)
         investments_made.solution = round.(investments_made.solution)
 
         CSV.write(
-            "$experiment_results_dir/investment-solutions/3var-E3-investments-$dem-$wind-$sol.csv",
+            "$experiment_results_dir/investment-solutions/$regret_baseline_name-investments-$dem-$wind-$sol.csv",
             DataFrame(investments_made),
         )
 
-        metrics_dict["3var-E3"] = [computed_baseline, 0, 0]
+        metrics_dict[regret_baseline_name] = [computed_baseline, 0, 0]
 
         for case in cases
             input_folder_baseline = joinpath(pwd(), "$experiment_inputs_dir/$case")
@@ -210,7 +234,16 @@ for i in 1:length(peak_demands)
             CSV.write("$input_folder_baseline/asset-milestone.csv", asset_milestone_df)
             CSV.write("$input_folder_baseline/asset-commission.csv", asset_comm_df)
 
-            metrics_dict[case] = regret_calculation(case, computed_baseline, dem, wind, sol)
+            metrics_dict[case] = regret_calculation(
+                case,
+                computed_baseline,
+                dem,
+                wind,
+                sol,
+                peak_demand,
+                wind_limit,
+                solar_limit,
+            )
         end
 
         write_results_regret(metrics_dict, dem, wind, sol)
