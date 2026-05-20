@@ -29,11 +29,14 @@ cases = [
     "3var-0T",
     # "3var-0N",
     "3var-E1",
-    "3var-E2",
+    # "3var-E2",
 ]
 # DB connection helper
 function input_setup_regret(input_folder)
-    connection = DBInterface.connect(DuckDB.DB)
+    rm("experiments_grid.duckdb"; force = true)
+    rm("experiments_grid.duckdb.wal"; force = true)
+
+    connection = DBInterface.connect(DuckDB.DB, "experiments_grid.duckdb")
 
     TulipaIO.read_csv_folder(
         connection,
@@ -61,7 +64,7 @@ function regret_calculation(
     create_model!(energy_problem)
     solve_model!(energy_problem)
 
-    save_solution!(energy_problem)
+    save_solution!(energy_problem; compute_duals = false)
 
     investments_made = get_table(connection, "var_assets_investment")[:, [:asset, :solution]]
     investments_made.solution = round.(investments_made.solution)
@@ -117,6 +120,8 @@ function regret_calculation(
     CSV.write("$input_folder_baseline/asset-commission.csv", asset_comm_df)
 
     DBInterface.close!(connection)
+    rm("experiments_grid.duckdb"; force = true)
+    rm("experiments_grid.duckdb.wal"; force = true)
 
     connection = input_setup_regret(input_folder_baseline)
 
@@ -130,6 +135,8 @@ function regret_calculation(
         (energy_problem_baseline.objective_value + assets_investment_cost) - reference_objective
 
     DBInterface.close!(connection)
+    rm("experiments_grid.duckdb"; force = true)
+    rm("experiments_grid.duckdb.wal"; force = true)
 
     GC.gc()
 
@@ -171,7 +178,7 @@ end
 
 # metrics_dict["3var-E2"] = [computed_baseline, 0, 0]
 
-regret_baseline_name = "3var-E3"
+regret_baseline_name = "3var-E2"
 
 for i in 1:length(peak_demands)
     for j in 1:length(wind_limits)
@@ -208,7 +215,7 @@ for i in 1:length(peak_demands)
 
         # println(computed_baseline - reference_objective)
 
-        save_solution!(energy_problem_E3)
+        save_solution!(energy_problem_E3; compute_duals = false)
 
         investments_made = get_table(connection, "var_assets_investment")[:, [:asset, :solution]]
         investments_made.solution = round.(investments_made.solution)
