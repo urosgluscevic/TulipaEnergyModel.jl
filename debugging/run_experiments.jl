@@ -38,6 +38,7 @@ metrics = [
 ]
 experiment_inputs_dir = "debugging/experiment-inputs/single-country"
 experiment_results_dir = "debugging/experiment-results"
+data_output_dir = "debugging/outputs"
 
 # after how many seconds to stop taking samples (at least one sample will always be taken)
 create_model_timeout = 86400 # seconds
@@ -66,7 +67,7 @@ case_studies_to_run = [
 
 # number of samples to run
 create_model_num_samples = 1
-run_model_num_samples = 3
+run_model_num_samples = 1 # TODO: Change me if you want more samples!!
 
 # this should be kept to 1
 create_model_num_evals = 1
@@ -77,6 +78,7 @@ global energy_problem_cb = undef
 ran_already = Ref(false)
 LP_relaxation = Ref(-1.0)
 global LP_relaxation_values = Dict()
+const shared_db_connection = DBInterface.connect(DuckDB.DB)
 
 function root_relaxation_callback(cb_data, cb_where::Cint)
     if ran_already[]
@@ -144,15 +146,72 @@ if run_case_studies_name_check
 end
 
 # DB connection helper
+function quote_sql_identifier(identifier)
+    return "\"" * replace(identifier, "\"" => "\"\"") * "\""
+end
+
+function reset_database!(connection)
+    tables = collect(
+        DBInterface.execute(
+            connection,
+            """
+            SELECT table_schema, table_name, table_type
+            FROM information_schema.tables
+            WHERE table_schema NOT IN ('information_schema', 'pg_catalog')
+            """,
+        ),
+    )
+
+    for table in tables
+        qualified_name =
+            quote_sql_identifier(table.table_schema) * "." * quote_sql_identifier(table.table_name)
+
+        if table.table_type == "VIEW"
+            DuckDB.execute(connection, "DROP VIEW IF EXISTS $qualified_name")
+        else
+            DuckDB.execute(connection, "DROP TABLE IF EXISTS $qualified_name")
+        end
+    end
+
+    sequences = collect(
+        DBInterface.execute(
+            connection,
+            """
+            SELECT schemaname AS sequence_schema, sequencename AS sequence_name
+            FROM pg_catalog.pg_sequences
+            WHERE schemaname NOT IN ('information_schema', 'pg_catalog')
+            """,
+        ),
+    )
+
+    for sequence in sequences
+        qualified_name =
+            quote_sql_identifier(sequence.sequence_schema) *
+            "." *
+            quote_sql_identifier(sequence.sequence_name)
+        DuckDB.execute(connection, "DROP SEQUENCE IF EXISTS $qualified_name")
+    end
+
+    return
+end
+
 function input_setup(input_folder)
-    connection = DBInterface.connect(DuckDB.DB)
+    reset_database!(shared_db_connection)
 
     TulipaIO.read_csv_folder(
-        connection,
+        shared_db_connection,
         input_folder;
         schemas = TulipaEnergyModel.schema_per_table_name,
     )
-    return connection
+    return shared_db_connection
+end
+
+function write_case_outputs!(energy_problem, case)
+    output_folder = joinpath(pwd(), data_output_dir, case)
+    mkpath(output_folder)
+    save_solution!(energy_problem)
+    export_solution_to_csv_files(output_folder, energy_problem)
+    return
 end
 
 # CREATE THE BENCHMARK SUITE
@@ -184,6 +243,8 @@ for case in case_studies_to_run
             if use_random_seeds
                 JuMP.set_optimizer_attribute(energy_problem.model, "seed", Int(rand(1:2e6)))
             end
+        end teardown = begin
+            write_case_outputs!(energy_problem, $case)
         end
     end
 end
@@ -232,6 +293,7 @@ for case in case_studies_to_run
     end
 
     solve_model!(energy_problem)
+    write_case_outputs!(energy_problem, case)
 
     if "obj_value" in metrics
         obj_value = energy_problem.objective_value

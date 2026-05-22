@@ -82,10 +82,6 @@ function save_solution!(connection, model, variables, constraints; compute_duals
             continue
         end
 
-        if name != :assets_investment
-            continue
-        end
-
         # Create a named tuple structure (row table compliant) to hold the solution (which follows the row format)
         # Note: This allocates memory, but I don't think there is a way to avoid it
         tmp_table = ((id = i, value = JuMP.value(v)) for (i, v) in enumerate(var.container))
