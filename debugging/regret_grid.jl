@@ -11,8 +11,8 @@ experiment_inputs_dir = "debugging/experiment-inputs/single-country"
 experiment_results_dir = "debugging/experiment-results"
 # reference_objective = 2338362.08463463
 
-peak_demands = [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]
-wind_limits = [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000]
+peak_demands = [3000, 6000, 7000]
+wind_limits = [1000, 3000, 4000]
 solar_limits = wind_limits ./ 2
 
 cases = [
@@ -70,7 +70,7 @@ function regret_calculation(
     investments_made.solution = round.(investments_made.solution)
 
     CSV.write(
-        "$experiment_results_dir/investment-solutions/$case-investments-$dem-$wind-$sol.csv",
+        "$experiment_results_dir/investment-solutions/$case-investments-$dem-$wind-$sol-ENS-FIX.csv",
         DataFrame(investments_made),
     )
 
@@ -144,7 +144,7 @@ function regret_calculation(
 end
 
 function write_results_regret(metrics_dict, dem, wind, sol)
-    open("$experiment_results_dir/regret$dem-$wind-$sol.csv", "w") do io
+    open("$experiment_results_dir/regret$dem-$wind-$sol-ENS-FIX.csv", "w") do io
         println(io, "case,regret,investment_cost,operation_cost")
 
         for (key, value) in metrics_dict
@@ -221,7 +221,7 @@ for i in 1:length(peak_demands)
         investments_made.solution = round.(investments_made.solution)
 
         CSV.write(
-            "$experiment_results_dir/investment-solutions/$regret_baseline_name-investments-$dem-$wind-$sol.csv",
+            "$experiment_results_dir/investment-solutions/$regret_baseline_name-investments-$dem-$wind-$sol-ENS-FIX.csv",
             DataFrame(investments_made),
         )
 
