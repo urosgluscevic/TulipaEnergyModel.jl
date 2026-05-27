@@ -11,8 +11,8 @@ experiment_inputs_dir = "debugging/experiment-inputs/single-country"
 experiment_results_dir = "debugging/experiment-results"
 # reference_objective = 2338362.08463463
 
-peak_demands = [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]
-wind_limits = [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000]
+peak_demands = [3000, 6000, 7000]
+wind_limits = [1000, 3000, 4000]
 solar_limits = wind_limits ./ 2
 
 cases = [
@@ -29,11 +29,14 @@ cases = [
     "3var-0T",
     # "3var-0N",
     "3var-E1",
-    "3var-E2",
+    # "3var-E2",
 ]
 # DB connection helper
 function input_setup_regret(input_folder)
-    connection = DBInterface.connect(DuckDB.DB)
+    rm("experiments_grid.duckdb"; force = true)
+    rm("experiments_grid.duckdb.wal"; force = true)
+
+    connection = DBInterface.connect(DuckDB.DB, "experiments_grid.duckdb")
 
     TulipaIO.read_csv_folder(
         connection,
@@ -61,13 +64,13 @@ function regret_calculation(
     create_model!(energy_problem)
     solve_model!(energy_problem)
 
-    save_solution!(energy_problem)
+    save_solution!(energy_problem; compute_duals = false)
 
     investments_made = get_table(connection, "var_assets_investment")[:, [:asset, :solution]]
     investments_made.solution = round.(investments_made.solution)
 
     CSV.write(
-        "$experiment_results_dir/investment-solutions/$case-investments-$dem-$wind-$sol.csv",
+        "$experiment_results_dir/investment-solutions/$case-investments-$dem-$wind-$sol-ENS-FIX.csv",
         DataFrame(investments_made),
     )
 
@@ -117,6 +120,8 @@ function regret_calculation(
     CSV.write("$input_folder_baseline/asset-commission.csv", asset_comm_df)
 
     DBInterface.close!(connection)
+    rm("experiments_grid.duckdb"; force = true)
+    rm("experiments_grid.duckdb.wal"; force = true)
 
     connection = input_setup_regret(input_folder_baseline)
 
@@ -130,6 +135,8 @@ function regret_calculation(
         (energy_problem_baseline.objective_value + assets_investment_cost) - reference_objective
 
     DBInterface.close!(connection)
+    rm("experiments_grid.duckdb"; force = true)
+    rm("experiments_grid.duckdb.wal"; force = true)
 
     GC.gc()
 
@@ -137,7 +144,7 @@ function regret_calculation(
 end
 
 function write_results_regret(metrics_dict, dem, wind, sol)
-    open("$experiment_results_dir/regret$dem-$wind-$sol.csv", "w") do io
+    open("$experiment_results_dir/regret$dem-$wind-$sol-ENS-FIX.csv", "w") do io
         println(io, "case,regret,investment_cost,operation_cost")
 
         for (key, value) in metrics_dict
@@ -171,7 +178,7 @@ end
 
 # metrics_dict["3var-E2"] = [computed_baseline, 0, 0]
 
-regret_baseline_name = "3var-E3"
+regret_baseline_name = "3var-E2"
 
 for i in 1:length(peak_demands)
     for j in 1:length(wind_limits)
@@ -208,13 +215,13 @@ for i in 1:length(peak_demands)
 
         # println(computed_baseline - reference_objective)
 
-        save_solution!(energy_problem_E3)
+        save_solution!(energy_problem_E3; compute_duals = false)
 
         investments_made = get_table(connection, "var_assets_investment")[:, [:asset, :solution]]
         investments_made.solution = round.(investments_made.solution)
 
         CSV.write(
-            "$experiment_results_dir/investment-solutions/$regret_baseline_name-investments-$dem-$wind-$sol.csv",
+            "$experiment_results_dir/investment-solutions/$regret_baseline_name-investments-$dem-$wind-$sol-ENS-FIX.csv",
             DataFrame(investments_made),
         )
 

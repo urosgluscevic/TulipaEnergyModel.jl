@@ -460,6 +460,22 @@ function add_objective!(connection, model, variables, expressions, model_paramet
 
     shut_down_cost = @expression(model, sum(row.cost * var_shut_down[row.id] for row in indices))
 
+    model[:uros_objective] = (;
+        assets_investment_cost,
+        assets_fixed_cost_compact_method,
+        assets_fixed_cost_simple_method,
+        storage_assets_energy_investment_cost,
+        storage_assets_energy_fixed_cost,
+        flows_investment_cost,
+        flows_fixed_cost,
+        flows_operational_cost,
+        vintage_flows_operational_cost,
+        units_on_cost,
+        start_up_cost,
+        shut_down_cost,
+        shut_down_cost_2var,
+    )
+
     ## Objective function
     @objective(
         model,
