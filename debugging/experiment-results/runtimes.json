@@ -1,0 +1,728 @@
+[
+  {
+    "Julia": "1.11.5",
+    "BenchmarkTools": {
+      "major": 1,
+      "minor": 6,
+      "patch": 0,
+      "prerelease": [],
+      "build": []
+    }
+  },
+  [
+    [
+      "BenchmarkGroup",
+      {
+        "data": {
+          "run_model": [
+            "BenchmarkGroup",
+            {
+              "data": {
+                "2var-E2": [
+                  "Trial",
+                  {
+                    "allocs": 4186291,
+                    "gctimes": [1.203608e8],
+                    "memory": 256734407,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [9.666001884e11]
+                  }
+                ],
+                "1var-E1CT": [
+                  "Trial",
+                  {
+                    "allocs": 2367428,
+                    "gctimes": [4.3974e7],
+                    "memory": 130479851,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [1.609677545e11]
+                  }
+                ],
+                "3var-0N": [
+                  "Trial",
+                  {
+                    "allocs": 1970419,
+                    "gctimes": [2.270295e8],
+                    "memory": 139755281,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [3.016030099e11]
+                  }
+                ],
+                "2var-0C": [
+                  "Trial",
+                  {
+                    "allocs": 1995845,
+                    "gctimes": [0.0],
+                    "memory": 127880360,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [1.315669844e11]
+                  }
+                ],
+                "2var-E1": [
+                  "Trial",
+                  {
+                    "allocs": 3075993,
+                    "gctimes": [2.54422e7],
+                    "memory": 202134600,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [7.708819679e11]
+                  }
+                ],
+                "1var-E2C": [
+                  "Trial",
+                  {
+                    "allocs": 1804366,
+                    "gctimes": [0.0],
+                    "memory": 107768299,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [1.43009519e10]
+                  }
+                ],
+                "1var-E1C": [
+                  "Trial",
+                  {
+                    "allocs": 1796250,
+                    "gctimes": [0.0],
+                    "memory": 106965851,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.4802434e9]
+                  }
+                ],
+                "3var-0T": [
+                  "Trial",
+                  {
+                    "allocs": 2309901,
+                    "gctimes": [1.224509e8],
+                    "memory": 159159617,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [5.3671268e9]
+                  }
+                ],
+                "3var-E3": [
+                  "Trial",
+                  {
+                    "allocs": 4880151,
+                    "gctimes": [3.033015e8],
+                    "memory": 329737355,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [9.807978258e11]
+                  }
+                ],
+                "1var-E2CT": [
+                  "Trial",
+                  {
+                    "allocs": 2987364,
+                    "gctimes": [6.32483e7],
+                    "memory": 164704736,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [5.104208557e11]
+                  }
+                ],
+                "2var-0T": [
+                  "Trial",
+                  {
+                    "allocs": 2273617,
+                    "gctimes": [0.0],
+                    "memory": 140405880,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.01635845e11]
+                  }
+                ],
+                "1var-0": [
+                  "Trial",
+                  {
+                    "allocs": 1307395,
+                    "gctimes": [0.0],
+                    "memory": 83620937,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [3.574095e8]
+                  }
+                ],
+                "3var-E1": [
+                  "Trial",
+                  {
+                    "allocs": 2333895,
+                    "gctimes": [3.3723e7],
+                    "memory": 205359977,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [3.33399747e10]
+                  }
+                ],
+                "3var-E2": [
+                  "Trial",
+                  {
+                    "allocs": 3341131,
+                    "gctimes": [7.57463e7],
+                    "memory": 261296915,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [4.71748848e10]
+                  }
+                ],
+                "3var-0C": [
+                  "Trial",
+                  {
+                    "allocs": 2146823,
+                    "gctimes": [0.0],
+                    "memory": 148334791,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.032054038e11]
+                  }
+                ]
+              },
+              "tags": []
+            }
+          ],
+          "create_model": [
+            "BenchmarkGroup",
+            {
+              "data": {
+                "2var-E2": [
+                  "Trial",
+                  {
+                    "allocs": 255975906,
+                    "gctimes": [3.5716872e9],
+                    "memory": 24343199608,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.31322722e10]
+                  }
+                ],
+                "1var-E1CT": [
+                  "Trial",
+                  {
+                    "allocs": 15435677,
+                    "gctimes": [1.495465e8],
+                    "memory": 972328594,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.2341654e9]
+                  }
+                ],
+                "3var-0N": [
+                  "Trial",
+                  {
+                    "allocs": 11747612,
+                    "gctimes": [1.454896e8],
+                    "memory": 699186575,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.1313602e9]
+                  }
+                ],
+                "2var-0C": [
+                  "Trial",
+                  {
+                    "allocs": 12674435,
+                    "gctimes": [1.277993e8],
+                    "memory": 749866756,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.0794998e9]
+                  }
+                ],
+                "2var-E1": [
+                  "Trial",
+                  {
+                    "allocs": 247189033,
+                    "gctimes": [3.1021985e9],
+                    "memory": 23673449093,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.20240905e10]
+                  }
+                ],
+                "1var-E2C": [
+                  "Trial",
+                  {
+                    "allocs": 13630735,
+                    "gctimes": [1.376717e8],
+                    "memory": 876518143,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [1.9708001e9]
+                  }
+                ],
+                "1var-E1C": [
+                  "Trial",
+                  {
+                    "allocs": 12892747,
+                    "gctimes": [1.424014e8],
+                    "memory": 807762530,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.053115e9]
+                  }
+                ],
+                "3var-0T": [
+                  "Trial",
+                  {
+                    "allocs": 13645146,
+                    "gctimes": [1.465418e8],
+                    "memory": 797695745,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.0951384e9]
+                  }
+                ],
+                "3var-E3": [
+                  "Trial",
+                  {
+                    "allocs": 1026249686,
+                    "gctimes": [1.13166455e10],
+                    "memory": 65819557253,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [1.9610489e11]
+                  }
+                ],
+                "1var-E2CT": [
+                  "Trial",
+                  {
+                    "allocs": 21595574,
+                    "gctimes": [7.271764e8],
+                    "memory": 1394408454,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [3.4027254e9]
+                  }
+                ],
+                "2var-0T": [
+                  "Trial",
+                  {
+                    "allocs": 13717076,
+                    "gctimes": [1.336359e8],
+                    "memory": 806243924,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.2773641e9]
+                  }
+                ],
+                "1var-0": [
+                  "Trial",
+                  {
+                    "allocs": 9226745,
+                    "gctimes": [5.75073e7],
+                    "memory": 575061367,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [1.8070334e9]
+                  }
+                ],
+                "3var-E1": [
+                  "Trial",
+                  {
+                    "allocs": 247097778,
+                    "gctimes": [3.0869517e9],
+                    "memory": 23641990059,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.55062991e10]
+                  }
+                ],
+                "3var-E2": [
+                  "Trial",
+                  {
+                    "allocs": 257102039,
+                    "gctimes": [4.2470516e9],
+                    "memory": 24452510693,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.7486396e10]
+                  }
+                ],
+                "3var-0C": [
+                  "Trial",
+                  {
+                    "allocs": 12451363,
+                    "gctimes": [1.508236e8],
+                    "memory": 729533950,
+                    "params": [
+                      "Parameters",
+                      {
+                        "gctrial": true,
+                        "time_tolerance": 0.05,
+                        "evals_set": false,
+                        "samples": 1,
+                        "evals": 1,
+                        "gcsample": false,
+                        "seconds": 86400.0,
+                        "overhead": 0.0,
+                        "memory_tolerance": 0.01
+                      }
+                    ],
+                    "times": [2.1851634e9]
+                  }
+                ]
+              },
+              "tags": []
+            }
+          ]
+        },
+        "tags": []
+      }
+    ]
+  ]
+]
