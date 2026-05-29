@@ -293,7 +293,6 @@ for case in case_studies_to_run
     end
 
     solve_model!(energy_problem)
-    write_case_outputs!(energy_problem, case)
 
     if "obj_value" in metrics
         obj_value = energy_problem.objective_value
