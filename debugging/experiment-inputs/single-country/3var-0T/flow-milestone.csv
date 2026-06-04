@@ -30,4 +30,4 @@ Nuclear4,demand,2030,false,0.0111,0.3,false
 OnWind,demand,2030,false,0.0,0.3,false
 OffWind,demand,2030,false,0.0,0.3,false
 Solar,demand,2030,false,0.01,0.3,false
-ens,demand,2030,false,0.77,0.3,false
+ens,demand,2030,false,20,0.3,false

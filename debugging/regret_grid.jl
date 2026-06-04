@@ -8,11 +8,11 @@ using CSV
 
 # experiment_inputs_dir = "debugging/experiment-inputs/multiple-countries"
 experiment_inputs_dir = "debugging/experiment-inputs/single-country"
-experiment_results_dir = "debugging/experiment-results"
+experiment_results_dir = "debugging/experiment-results-regret"
 # reference_objective = 2338362.08463463
 
-peak_demands = [3000, 6000, 7000]
-wind_limits = [1000, 3000, 4000]
+peak_demands = [5000, 7000]
+wind_limits = [0, 1000]
 solar_limits = wind_limits ./ 2
 
 cases = [
@@ -183,8 +183,11 @@ regret_baseline_name = "3var-E2"
 for i in 1:length(peak_demands)
     for j in 1:length(wind_limits)
         peak_demand = peak_demands[i]
-        wind_limit = wind_limits[j]
-        solar_limit = solar_limits[j]
+        # wind_limit = wind_limits[j]
+        # solar_limit = solar_limits[j]
+
+        wind_limit = peak_demand + wind_limits[j]
+        solar_limit = wind_limit / 2
 
         dem = string(peak_demand)
         wind = string(wind_limit)
