@@ -1186,6 +1186,9 @@ drop sequence id
 create sequence id start 1
 ;
 
+drop table if exists cons_minimum_up_time
+;
+
 create table cons_minimum_up_time as
 with sorted as
 (select distinct
@@ -1224,6 +1227,9 @@ drop sequence id
 ;
 
 create sequence id start 1
+;
+
+drop table if exists cons_minimum_down_time_simple_investment
 ;
 
 create table cons_minimum_down_time_simple_investment as
@@ -1266,6 +1272,9 @@ drop sequence id
 create sequence id start 1
 ;
 
+drop table if exists cons_minimum_down_time_compact_investment
+;
+
 create table cons_minimum_down_time_compact_investment as
 with sorted as
 (select distinct
@@ -1306,6 +1315,9 @@ drop sequence id
 create sequence id start 1
 ;
 
+drop table if exists cons_su_ramping_2_3_var_flow_diff
+;
+
 create table cons_su_ramping_2_3_var_flow_diff as
 with sub as
 (select distinct
@@ -1343,6 +1355,9 @@ drop sequence id
 create sequence id start 1
 ;
 
+drop table if exists cons_sd_ramping_3var_flow_diff
+;
+
 create table cons_sd_ramping_3var_flow_diff as
 with sub as
 (select distinct
@@ -1378,6 +1393,9 @@ drop sequence id
 ;
 
 create sequence id start 1
+;
+
+drop table if exists cons_su_ramping_2_3_var_flow_upper_bound
 ;
 
 create table cons_su_ramping_2_3_var_flow_upper_bound as
@@ -1420,6 +1438,9 @@ drop sequence id
 create sequence id start 1
 ;
 
+drop table if exists cons_sd_ramping_3var_flow_upper_bound
+;
+
 create table cons_sd_ramping_3var_flow_upper_bound as
 with sub as
 (select distinct
@@ -1458,6 +1479,9 @@ drop sequence id
 ;
 
 create sequence id start 1
+;
+
+drop table if exists cons_susd_ramping_3var_flow_unaligned_uc
 ;
 
 create table cons_susd_ramping_3var_flow_unaligned_uc as
@@ -1592,6 +1616,9 @@ drop sequence id
 create sequence id start 1
 ;
 
+drop table if exists cons_minimum_down_time_2var_simple_investment
+;
+
 create table cons_minimum_down_time_2var_simple_investment as
 with sorted as
 (select distinct
@@ -1630,6 +1657,9 @@ drop sequence id
 ;
 
 create sequence id start 1
+;
+
+drop table if exists cons_minimum_down_time_2var_compact_investment
 ;
 
 create table cons_minimum_down_time_2var_compact_investment as
@@ -1672,6 +1702,9 @@ drop sequence id
 create sequence id start 1
 ;
 
+drop table if exists cons_sd_ramping_2var_flow_diff
+;
+
 create table cons_sd_ramping_2var_flow_diff as
 with sub as
 (select distinct
@@ -1707,6 +1740,9 @@ drop sequence id
 ;
 
 create sequence id start 1
+;
+
+drop table if exists cons_susd_ramping_2var_flow_unaligned_uc
 ;
 
 create table cons_susd_ramping_2var_flow_unaligned_uc as
@@ -1749,6 +1785,9 @@ drop sequence id
 create sequence id start 1
 ;
 
+drop table if exists cons_sd_ramping_2var_flow_upper_bound
+;
+
 create table cons_sd_ramping_2var_flow_upper_bound as
 with sub as
 (select distinct
@@ -1787,6 +1826,9 @@ drop sequence id
 ;
 
 create sequence id start 1
+;
+
+drop table if exists cons_susd_trajectory
 ;
 
 create table cons_susd_trajectory as
