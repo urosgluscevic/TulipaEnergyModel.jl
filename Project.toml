@@ -1,7 +1,7 @@
 name = "TulipaEnergyModel"
 uuid = "5d7bd171-d18e-45a5-9111-f1f11ac5d04d"
-authors = ["Abel Soares Siqueira <abel.s.siqueira@gmail.com>", "Diego A. Tejada-Arango <diego.tejadaarango@tno.nl>", "Germán Morales-España <german.morales@tno.nl>", "Grigory Neustroev <G.Neustroev@tudelft.nl>", "Juha Kiviluoma <Juha.Kiviluoma@vtt.fi>", "Lauren Clisby <lauren.clisby@tno.nl>", "Maaike Elgersma <m.b.elgersma@tudelft.nl>", "Ni Wang <ni.wang@tno.nl>", "Suvayu Ali <s.ali@esciencecenter.nl>", "Zhi Gao <z.gao1@uu.nl>"]
 version = "0.18.0"
+authors = ["Abel Soares Siqueira <abel.s.siqueira@gmail.com>", "Diego A. Tejada-Arango <diego.tejadaarango@tno.nl>", "Germán Morales-España <german.morales@tno.nl>", "Grigory Neustroev <G.Neustroev@tudelft.nl>", "Juha Kiviluoma <Juha.Kiviluoma@vtt.fi>", "Lauren Clisby <lauren.clisby@tno.nl>", "Maaike Elgersma <m.b.elgersma@tudelft.nl>", "Ni Wang <ni.wang@tno.nl>", "Suvayu Ali <s.ali@esciencecenter.nl>", "Zhi Gao <z.gao1@uu.nl>"]
 
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
@@ -13,6 +13,7 @@ Gurobi = "2e9cd046-0924-5485-92f1-d5272153d98b"
 HiGHS = "87dc4568-4c63-4d18-b0c0-bb2238e4078b"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
+JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 MathOptInterface = "b8f27783-ece8-5eb3-8dc8-9495eed66fee"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
@@ -32,6 +33,7 @@ Gurobi = "1.7.6"
 HiGHS = "1"
 JSON = "0.21.4, 1"
 JuMP = "1"
+JuliaFormatter = "1.0.62"
 MathOptInterface = "1"
 OrderedCollections = "1"
 SparseArrays = "1"
