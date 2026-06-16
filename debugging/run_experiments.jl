@@ -63,6 +63,10 @@ case_studies_to_run = [
     "3var-E3",
 ]
 
+io = open("order.txt", "a")
+write(io, "")
+close(io)
+
 ### BENCHMARK PARAMETERS
 
 # number of samples to run
@@ -78,7 +82,7 @@ global energy_problem_cb = undef
 ran_already = Ref(false)
 LP_relaxation = Ref(-1.0)
 global LP_relaxation_values = Dict()
-const shared_db_connection = DBInterface.connect(DuckDB.DB)
+shared_db_connection = DBInterface.connect(DuckDB.DB)
 
 function root_relaxation_callback(cb_data, cb_where::Cint)
     if ran_already[]
@@ -196,7 +200,12 @@ function reset_database!(connection)
 end
 
 function input_setup(input_folder)
-    reset_database!(shared_db_connection)
+    DBInterface.close!(shared_db_connection)
+    global shared_db_connection = DBInterface.connect(DuckDB.DB)
+
+    io = open("order.txt", "a")
+    println(io, input_folder)
+    close(io)
 
     TulipaIO.read_csv_folder(
         shared_db_connection,
