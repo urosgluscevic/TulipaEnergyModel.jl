@@ -1,4 +1,3 @@
-using BenchmarkTools
 using TulipaEnergyModel
 using TulipaIO
 using DuckDB
