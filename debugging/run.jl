@@ -61,11 +61,17 @@ for case in case_studies_to_run
         schemas = TulipaEnergyModel.schema_per_table_name,
     )
 
+    # Ensure output path exists
+    output_folder = joinpath(pwd(), experiment_results_dir, case)
+    if !isdir(output_folder)
+        mkpath(output_folder)
+    end
+
     # Run case
     energy_problem = run_scenario(
         conn;
         log_file = "log_file.log",
-        output_folder = joinpath(pwd(), experiment_results_dir, case),
+        output_folder = output_folder,
         model_file_name = "modelnt.lp",
     )
 end
