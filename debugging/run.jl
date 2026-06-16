@@ -42,6 +42,7 @@ end
 
 conn = DBInterface.connect(DuckDB.DB)
 for case in case_studies_to_run
+    global conn
     input_folder = joinpath(pwd(), experiment_inputs_dir, case)
 
     # Reset database state
