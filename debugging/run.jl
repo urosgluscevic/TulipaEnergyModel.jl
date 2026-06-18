@@ -26,7 +26,7 @@ case_studies_to_run = [
 ]
 
 io = open("order.txt", "w")
-write(io, "aa")
+write(io, "")
 close(io)
 
 # Check if all case studies actually exist
@@ -40,33 +40,30 @@ for case in case_studies_to_run
     end
 end
 
-conn = DBInterface.connect(DuckDB.DB)
 for case in case_studies_to_run
-    global conn
     input_folder = joinpath(pwd(), experiment_inputs_dir, case)
 
     # Reset database state
-    DBInterface.close!(conn)
     conn = DBInterface.connect(DuckDB.DB)
-
+    
     # Take note of which case we are starting
     io = open("order.txt", "a")
     println(io, input_folder)
     close(io)
-
+    
     # Load the csv data
     TulipaIO.read_csv_folder(
         conn,
         input_folder;
         schemas = TulipaEnergyModel.schema_per_table_name,
     )
-
+    
     # Ensure output path exists
     output_folder = joinpath(pwd(), experiment_results_dir, case)
     if !isdir(output_folder)
         mkpath(output_folder)
     end
-
+    
     # Run case
     energy_problem = run_scenario(
         conn;
@@ -74,5 +71,11 @@ for case in case_studies_to_run
         output_folder = output_folder,
         model_file_name = "modelnt.lp",
     )
-end
+    DBInterface.close!(conn)
 
+    # Free the RAM
+    MOI.empty!(JuMP.backend(energy_problem.model))
+    GC.gc()
+
+end
+    

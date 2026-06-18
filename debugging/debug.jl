@@ -7,7 +7,7 @@ in_folder = joinpath(pwd(), "debugging/experiment-inputs/single-country")
 # bench_folder = joinpath(pwd(), "debugging")
 
 # in_dir = joinpath(in_folder, "Multi-year Investments")
-in_dir = joinpath(in_folder, "3var-0N")
+in_dir = joinpath(in_folder, "1var-0")
 # in_dir = joinpath(in_folder, "all-susd")
 # in_dir = joinpath(in_folder, "UC-ramping")
 # in_dir = joinpath(in_folder, "case-study")
