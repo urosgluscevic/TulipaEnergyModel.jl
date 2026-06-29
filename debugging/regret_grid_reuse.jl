@@ -29,7 +29,7 @@ cases = [
     # "3var-0T",
     # "3var-0N",
     # "3var-E1",
-    "3var-E2",
+    # "3var-E2",
 ]
 # DB connection helper
 function input_setup_regret(input_folder)
@@ -104,18 +104,18 @@ function regret_calculation(
     asset_both_df.initial_units = asset_both_df.solution
     asset_both_df = select!(asset_both_df, Not(:solution))
 
-    asset_both_df[asset_both_df.asset.=="ens", :initial_units] .= 1
-    asset_both_df[asset_both_df.asset.=="demand", :initial_units] .= 0
+    asset_both_df[asset_both_df.asset .== "ens", :initial_units] .= 1
+    asset_both_df[asset_both_df.asset .== "demand", :initial_units] .= 0
 
     CSV.write("$input_folder_baseline/asset-both.csv", asset_both_df)
 
     asset_milestone_df = DataFrame(CSV.File("$input_folder_baseline/asset-milestone.csv"))
-    asset_milestone_df[asset_milestone_df.asset.=="demand", :peak_demand] .= peak_demand
+    asset_milestone_df[asset_milestone_df.asset .== "demand", :peak_demand] .= peak_demand
 
     asset_comm_df = DataFrame(CSV.File("$input_folder_baseline/asset-commission.csv"))
-    asset_comm_df[asset_milestone_df.asset.=="OnWind", :investment_limit] .= wind_limit
-    asset_comm_df[asset_milestone_df.asset.=="OffWind", :investment_limit] .= wind_limit
-    asset_comm_df[asset_milestone_df.asset.=="Solar", :investment_limit] .= solar_limit
+    asset_comm_df[asset_milestone_df.asset .== "OnWind", :investment_limit] .= wind_limit
+    asset_comm_df[asset_milestone_df.asset .== "OffWind", :investment_limit] .= wind_limit
+    asset_comm_df[asset_milestone_df.asset .== "Solar", :investment_limit] .= solar_limit
 
     CSV.write("$input_folder_baseline/asset-milestone.csv", asset_milestone_df)
     CSV.write("$input_folder_baseline/asset-commission.csv", asset_comm_df)
@@ -179,7 +179,7 @@ end
 
 # metrics_dict["3var-E2"] = [computed_baseline, 0, 0]
 
-regret_baseline_name = "3var-E2"
+regret_baseline_name = "1var-E1CT"
 
 for i in 1:length(peak_demands)
     for j in 1:length(wind_limits)
@@ -202,17 +202,21 @@ for i in 1:length(peak_demands)
 
         asset_df.unit_commitment = passmissing(Bool).(asset_df.unit_commitment)
 
-        asset_df[asset_df.unit_commitment.==true, :unit_commitment_method] .= regret_baseline_name
+        asset_df.unit_commitment_method = passmissing(String).(asset_df.unit_commitment_method)
+
+        # print(asset_df)
+
+        asset_df[asset_df.unit_commitment .== true, :unit_commitment_method] .= regret_baseline_name
 
         CSV.write("$input_folder_baseline/asset.csv", asset_df)
 
         asset_milestone_df = DataFrame(CSV.File("$input_folder_baseline/asset-milestone.csv"))
-        asset_milestone_df[asset_milestone_df.asset.=="demand", :peak_demand] .= peak_demand
+        asset_milestone_df[asset_milestone_df.asset .== "demand", :peak_demand] .= peak_demand
 
         asset_comm_df = DataFrame(CSV.File("$input_folder_baseline/asset-commission.csv"))
-        asset_comm_df[asset_milestone_df.asset.=="OnWind", :investment_limit] .= wind_limit
-        asset_comm_df[asset_milestone_df.asset.=="OffWind", :investment_limit] .= wind_limit
-        asset_comm_df[asset_milestone_df.asset.=="Solar", :investment_limit] .= solar_limit
+        asset_comm_df[asset_milestone_df.asset .== "OnWind", :investment_limit] .= wind_limit
+        asset_comm_df[asset_milestone_df.asset .== "OffWind", :investment_limit] .= wind_limit
+        asset_comm_df[asset_milestone_df.asset .== "Solar", :investment_limit] .= solar_limit
 
         CSV.write("$input_folder_baseline/asset-milestone.csv", asset_milestone_df)
         CSV.write("$input_folder_baseline/asset-commission.csv", asset_comm_df)
@@ -243,19 +247,20 @@ for i in 1:length(peak_demands)
             input_folder_baseline = joinpath(pwd(), "$experiment_inputs_dir/investment_problem")
 
             asset_milestone_df = DataFrame(CSV.File("$input_folder_baseline/asset-milestone.csv"))
-            asset_milestone_df[asset_milestone_df.asset.=="demand", :peak_demand] .= peak_demand
+            asset_milestone_df[asset_milestone_df.asset .== "demand", :peak_demand] .= peak_demand
 
             asset_comm_df = DataFrame(CSV.File("$input_folder_baseline/asset-commission.csv"))
-            asset_comm_df[asset_milestone_df.asset.=="OnWind", :investment_limit] .= wind_limit
-            asset_comm_df[asset_milestone_df.asset.=="OffWind", :investment_limit] .= wind_limit
-            asset_comm_df[asset_milestone_df.asset.=="Solar", :investment_limit] .= solar_limit
+            asset_comm_df[asset_milestone_df.asset .== "OnWind", :investment_limit] .= wind_limit
+            asset_comm_df[asset_milestone_df.asset .== "OffWind", :investment_limit] .= wind_limit
+            asset_comm_df[asset_milestone_df.asset .== "Solar", :investment_limit] .= solar_limit
 
             asset_df = DataFrame(CSV.File("$input_folder_baseline/asset.csv"))
 
             asset_df.unit_commitment = passmissing(Bool).(asset_df.unit_commitment)
 
-            asset_df[asset_df.unit_commitment.==true, :unit_commitment_method] .=
-                regret_baseline_name
+            asset_df.unit_commitment_method = passmissing(String).(asset_df.unit_commitment_method)
+
+            asset_df[asset_df.unit_commitment .== true, :unit_commitment_method] .= case
 
             CSV.write("$input_folder_baseline/asset.csv", asset_df)
 
