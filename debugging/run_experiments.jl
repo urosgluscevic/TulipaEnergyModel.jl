@@ -5,6 +5,9 @@ using DuckDB
 using JuMP
 using Gurobi
 
+using DataFrames
+using CSV
+
 ### INSTRUCTIONS
 
 # 1. Copy the case study input files into the `experiment-inputs` directory
@@ -13,7 +16,7 @@ using Gurobi
 #   and obj.csv will contain the objective values and potentially LP relaxations
 
 ### SETUP
-run_case_studies_name_check = true # set to `true` if you want to run a function which checks whether each case study exists
+run_case_studies_name_check = false # set to `true` if you want to run a function which checks whether each case study exists
 use_random_seeds = true # set to `true` if you want the solver to use a random seed each time it solves an energy problem instance
 # This array should contain the metrics to be included in the experiment run.
 # Available values are: [
@@ -36,7 +39,7 @@ metrics = [
     "model_create_time_std",
     "model_solve_time_std",
 ]
-experiment_inputs_dir = "debugging/experiment-inputs/single-country"
+experiment_inputs_dir = "debugging/experiment-inputs/investment_problem_runtime"
 experiment_results_dir = "debugging/experiment-results"
 
 # after how many seconds to stop taking samples (at least one sample will always be taken)
@@ -65,18 +68,22 @@ case_studies_to_run = [
 ### BENCHMARK PARAMETERS
 
 # number of samples to run
-create_model_num_samples = 1
-run_model_num_samples = 3
+create_model_num_samples = 5
+run_model_num_samples = 5
 
 # this should be kept to 1
-create_model_num_evals = 1
-run_model_num_evals = 1
+create_model_num_evals = 5
+run_model_num_evals = 5
 
 ### Global variables
 global energy_problem_cb = undef
 ran_already = Ref(false)
 LP_relaxation = Ref(-1.0)
 global LP_relaxation_values = Dict()
+
+PEAK_DEMAND = 9000
+WIND_LIMIT = 9000
+SOLAR_LIMIT = 4500
 
 function root_relaxation_callback(cb_data, cb_where::Cint)
     if ran_already[]
@@ -145,7 +152,10 @@ end
 
 # DB connection helper
 function input_setup(input_folder)
-    connection = DBInterface.connect(DuckDB.DB)
+    rm("experiments_grid.duckdb"; force = true)
+    rm("experiments_grid.duckdb.wal"; force = true)
+
+    connection = DBInterface.connect(DuckDB.DB, "experiments_grid.duckdb")
 
     TulipaIO.read_csv_folder(
         connection,
@@ -161,7 +171,25 @@ SUITE["create_model"] = BenchmarkGroup()
 SUITE["run_model"] = BenchmarkGroup()
 
 for case in case_studies_to_run
-    input_folder = joinpath(pwd(), "$experiment_inputs_dir/$case")
+    input_folder = joinpath(pwd(), "$experiment_inputs_dir")
+
+    asset_df = DataFrame(CSV.File("$input_folder/asset.csv"))
+    asset_df.unit_commitment = passmissing(Bool).(asset_df.unit_commitment)
+    asset_df.unit_commitment_method = passmissing(String).(asset_df.unit_commitment_method)
+    asset_df[asset_df.unit_commitment .== true, :unit_commitment_method] .= case
+
+    CSV.write("$input_folder/asset.csv", asset_df)
+
+    asset_milestone_df = DataFrame(CSV.File("$input_folder/asset-milestone.csv"))
+    asset_milestone_df[asset_milestone_df.asset .== "demand", :peak_demand] .= PEAK_DEMAND
+
+    asset_comm_df = DataFrame(CSV.File("$input_folder/asset-commission.csv"))
+    asset_comm_df[asset_milestone_df.asset .== "OnWind", :investment_limit] .= WIND_LIMIT
+    asset_comm_df[asset_milestone_df.asset .== "OffWind", :investment_limit] .= WIND_LIMIT
+    asset_comm_df[asset_milestone_df.asset .== "Solar", :investment_limit] .= SOLAR_LIMIT
+
+    CSV.write("$input_folder/asset-milestone.csv", asset_milestone_df)
+    CSV.write("$input_folder/asset-commission.csv", asset_comm_df)
 
     # Benchmark of creating the model
     if "model_creation_time" in metrics
@@ -196,7 +224,10 @@ end
 
 # Save run times
 if results_of_run != undef
-    BenchmarkTools.save("$experiment_results_dir/runtimes.json", results_of_run)
+    BenchmarkTools.save(
+        "$experiment_results_dir/runtimes$PEAK_DEMAND-$WIND_LIMIT.json",
+        results_of_run,
+    )
 end
 
 metrics_dict = Dict()
@@ -212,7 +243,14 @@ for case in case_studies_to_run
 
     metrics_results = []
 
-    input_folder = joinpath(pwd(), "$experiment_inputs_dir/$case")
+    input_folder = joinpath(pwd(), "$experiment_inputs_dir")
+
+    asset_df = DataFrame(CSV.File("$input_folder/asset.csv"))
+    asset_df.unit_commitment = passmissing(Bool).(asset_df.unit_commitment)
+    asset_df.unit_commitment_method = passmissing(String).(asset_df.unit_commitment_method)
+    asset_df[asset_df.unit_commitment .== true, :unit_commitment_method] .= case
+
+    CSV.write("$input_folder/asset.csv", asset_df)
 
     energy_problem = EnergyProblem(input_setup(input_folder))
     create_model!(energy_problem)
@@ -311,7 +349,7 @@ for case in case_studies_to_run
     metrics_dict[case] = metrics_results
 end
 
-open("$experiment_results_dir/results.csv", "w") do io
+open("$experiment_results_dir/metrics$PEAK_DEMAND-$WIND_LIMIT.csv", "w") do io
     columns = "case," * join(metrics, ",")
     println(io, columns)
 
