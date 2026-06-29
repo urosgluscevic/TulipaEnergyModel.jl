@@ -17,19 +17,19 @@ solar_limits = wind_limits ./ 2
 
 cases = [
     "1var-0",
-    # "1var-E1C",
-    # "1var-E1CT",
-    # "1var-E2C",
-    # "1var-E2CT",
-    # "2var-0C",
-    # "2var-0T",
-    # "2var-E1",
-    # "2var-E2",
-    # "3var-0C",
-    # "3var-0T",
-    # "3var-0N",
-    # "3var-E1",
-    # "3var-E2",
+    "1var-E1C",
+    "1var-E1CT",
+    "1var-E2C",
+    "1var-E2CT",
+    "2var-0C",
+    "2var-0T",
+    "2var-E1",
+    "2var-E2",
+    "3var-0C",
+    "3var-0T",
+    "3var-0N",
+    "3var-E1",
+    "3var-E2",
 ]
 # DB connection helper
 function input_setup_regret(input_folder)
@@ -71,7 +71,7 @@ function regret_calculation(
     investments_made.solution = round.(investments_made.solution)
 
     CSV.write(
-        "$experiment_results_dir/investment-solutions/$case-investments-$dem-$wind-$sol-ENS-FIX.csv",
+        "$experiment_results_dir/investment-solutions/$case-investments-$dem-$wind.csv",
         DataFrame(investments_made),
     )
 
@@ -145,7 +145,7 @@ function regret_calculation(
 end
 
 function write_results_regret(metrics_dict, dem, wind, sol)
-    open("$experiment_results_dir/regret$dem-$wind-$sol-ENS-FIX.csv", "w") do io
+    open("$experiment_results_dir/regret$dem-$wind.csv", "w") do io
         println(io, "case,regret,investment_cost,operation_cost")
 
         for (key, value) in metrics_dict
@@ -179,7 +179,7 @@ end
 
 # metrics_dict["3var-E2"] = [computed_baseline, 0, 0]
 
-regret_baseline_name = "1var-E1CT"
+regret_baseline_name = "3var-E3"
 
 for i in 1:length(peak_demands)
     for j in 1:length(wind_limits)
@@ -237,7 +237,7 @@ for i in 1:length(peak_demands)
         investments_made.solution = round.(investments_made.solution)
 
         CSV.write(
-            "$experiment_results_dir/investment-solutions/$regret_baseline_name-investments-$dem-$wind-$sol-ENS-FIX.csv",
+            "$experiment_results_dir/investment-solutions/$regret_baseline_name-investments-$dem-$wind.csv",
             DataFrame(investments_made),
         )
 
