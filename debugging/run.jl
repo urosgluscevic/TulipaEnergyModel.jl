@@ -3,9 +3,13 @@ using TulipaIO
 using DuckDB
 using JuMP
 using Gurobi
+using CSV
+using DataFrames
+using Dates
 
-experiment_inputs_dir = "debugging/experiment-inputs/single-country"
+experiment_inputs_dir = "debugging/experiment-inputs/modifiable-cases"
 experiment_results_dir = "debugging/experiment-outputs"
+log_file = "debugging/run.log"
 
 case_studies_to_run = [
     "1var-0",
@@ -25,57 +29,61 @@ case_studies_to_run = [
     # "3var-E3",
 ]
 
-io = open("order.txt", "w")
-write(io, "")
-close(io)
+# Create/Clear the log file
+open(log_file, "w") do io
+    println(io, "")
+end
 
-# Check if all case studies actually exist
-existing_case_studies = readdir(joinpath(pwd(), experiment_inputs_dir))
+# Case_type is supposed to be brownfield-..., greenfield
+# Case will be the nvar-En
+case_types = readdir(experiment_inputs_dir)
 
-for case in case_studies_to_run
-    if !(case in existing_case_studies)
-        throw(
-            "The case study with name '$case' does not exist in the $experiment_inputs_dir folder.",
+for case_type in case_types
+    for case in case_studies_to_run
+        input_folder = joinpath(experiment_inputs_dir, case_type)
+        asset_file = joinpath(input_folder, "asset.csv")
+
+        # Open database connection
+        conn = DBInterface.connect(DuckDB.DB)
+        
+
+        # Take note of which case we are starting
+        curr_time = Dates.format(Dates.now(), "yyyy-mm-dd HH:MM:SS.sss")
+        open(log_file, "a") do io
+            println(io, "$curr_time: Starting case: $case_type/$case")
+        end
+        
+        # Modify asset.csv to have correct UC-method
+        asset_data = CSV.read(asset_file, DataFrame)
+        asset_data.unit_commitment_method .= replace.(
+            coalesce.(asset_data.unit_commitment_method, ""), # Changes missing values to "", else regex cant match
+            r".var-.*" => case
         )
+        CSV.write(asset_file, asset_data)
+
+        # Load the csv data
+        TulipaIO.read_csv_folder(
+            conn,
+            input_folder;
+            schemas = TulipaEnergyModel.schema_per_table_name,
+        )
+        
+        # Ensure output path exists
+        output_folder = joinpath(pwd(), experiment_results_dir, case)
+        if !isdir(output_folder)
+            mkpath(output_folder)
+        end
+        
+        # Run case
+        energy_problem = run_scenario(
+            conn;
+            log_file = "log_file.log",
+            output_folder = output_folder,
+            model_file_name = "modelnt.lp",
+        )
+        DBInterface.close!(conn)
+        open(log_file, "a") do io
+            println(io, "$curr_time: Finished case: $case_type/$case")
+        end
     end
-end
-
-for case in case_studies_to_run
-    input_folder = joinpath(pwd(), experiment_inputs_dir, case)
-
-    # Reset database state
-    conn = DBInterface.connect(DuckDB.DB)
-    
-    # Take note of which case we are starting
-    io = open("order.txt", "a")
-    println(io, input_folder)
-    close(io)
-    
-    # Load the csv data
-    TulipaIO.read_csv_folder(
-        conn,
-        input_folder;
-        schemas = TulipaEnergyModel.schema_per_table_name,
-    )
-    
-    # Ensure output path exists
-    output_folder = joinpath(pwd(), experiment_results_dir, case)
-    if !isdir(output_folder)
-        mkpath(output_folder)
-    end
-    
-    # Run case
-    energy_problem = run_scenario(
-        conn;
-        log_file = "log_file.log",
-        output_folder = output_folder,
-        model_file_name = "modelnt.lp",
-    )
-    DBInterface.close!(conn)
-
-    # Free the RAM
-    MOI.empty!(JuMP.backend(energy_problem.model))
-    GC.gc()
-
-end
-    
+end    
