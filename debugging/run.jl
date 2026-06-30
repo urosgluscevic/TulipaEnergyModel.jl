@@ -78,12 +78,12 @@ for case_type in case_types
             schemas = TulipaEnergyModel.schema_per_table_name,
         )
         
-        Run case
+        # Run case
         energy_problem = run_scenario(
             conn;
             log_file = "log_file.log",
             output_folder = output_folder,
-            model_file_name = "modelnt.lp",
+            model_file_name = "model.lp",
         )
         DBInterface.close!(conn)
 
