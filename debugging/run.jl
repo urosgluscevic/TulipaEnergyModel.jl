@@ -78,13 +78,13 @@ for case_type in case_types
             schemas = TulipaEnergyModel.schema_per_table_name,
         )
         
-        # Run case
-        # energy_problem = run_scenario(
-        #     conn;
-        #     log_file = "log_file.log",
-        #     output_folder = output_folder,
-        #     model_file_name = "modelnt.lp",
-        # )
+        Run case
+        energy_problem = run_scenario(
+            conn;
+            log_file = "log_file.log",
+            output_folder = output_folder,
+            model_file_name = "modelnt.lp",
+        )
         DBInterface.close!(conn)
 
         curr_time = Dates.format(Dates.now(), "yyyy-mm-dd HH:MM:SS.sss")
