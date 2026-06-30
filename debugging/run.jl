@@ -40,7 +40,17 @@ case_types = readdir(experiment_inputs_dir)
 
 for case_type in case_types
     for case in case_studies_to_run
-        input_folder = joinpath(experiment_inputs_dir, case_type)
+        output_casetype_folder = joinpath(pwd(), experiment_results_dir, case_type)
+        if !isdir(output_casetype_folder)
+            mkpath(output_casetype_folder)
+        end
+        
+        output_folder = joinpath(pwd(), experiment_results_dir, case_type, case)
+        if !isdir(output_folder)
+            mkpath(output_folder)
+        end
+
+        input_folder = joinpath(pwd(), experiment_inputs_dir, case_type)
         asset_file = joinpath(input_folder, "asset.csv")
 
         # Open database connection
@@ -68,20 +78,16 @@ for case_type in case_types
             schemas = TulipaEnergyModel.schema_per_table_name,
         )
         
-        # Ensure output path exists
-        output_folder = joinpath(pwd(), experiment_results_dir, case)
-        if !isdir(output_folder)
-            mkpath(output_folder)
-        end
-        
         # Run case
-        energy_problem = run_scenario(
-            conn;
-            log_file = "log_file.log",
-            output_folder = output_folder,
-            model_file_name = "modelnt.lp",
-        )
+        # energy_problem = run_scenario(
+        #     conn;
+        #     log_file = "log_file.log",
+        #     output_folder = output_folder,
+        #     model_file_name = "modelnt.lp",
+        # )
         DBInterface.close!(conn)
+
+        curr_time = Dates.format(Dates.now(), "yyyy-mm-dd HH:MM:SS.sss")
         open(log_file, "a") do io
             println(io, "$curr_time: Finished case: $case_type/$case")
         end
