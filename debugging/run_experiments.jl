@@ -34,13 +34,13 @@ metrics = [
     "num_constraints_presolve",
     "LP_gap",
     "LP_gap_presolve",
-    "model_creation_time",
+    # "model_creation_time",
     "model_solve_time",
-    "model_create_time_std",
+    # "model_create_time_std",
     "model_solve_time_std",
 ]
 experiment_inputs_dir = "debugging/experiment-inputs/investment_problem_runtime"
-experiment_results_dir = "debugging/experiment-results"
+experiment_results_dir = "debugging/experiment-results-AWS-runtime"
 
 # after how many seconds to stop taking samples (at least one sample will always be taken)
 create_model_timeout = 86400 # seconds
@@ -68,12 +68,12 @@ case_studies_to_run = [
 ### BENCHMARK PARAMETERS
 
 # number of samples to run
-create_model_num_samples = 5
+create_model_num_samples = 0
 run_model_num_samples = 5
 
 # this should be kept to 1
-create_model_num_evals = 5
-run_model_num_evals = 5
+create_model_num_evals = 1
+run_model_num_evals = 1
 
 ### Global variables
 global energy_problem_cb = undef
@@ -170,7 +170,7 @@ const SUITE = BenchmarkGroup()
 SUITE["create_model"] = BenchmarkGroup()
 SUITE["run_model"] = BenchmarkGroup()
 
-for case in case_studies_to_run
+function prepare_input_files(case)
     input_folder = joinpath(pwd(), "$experiment_inputs_dir")
 
     asset_df = DataFrame(CSV.File("$input_folder/asset.csv"))
@@ -179,25 +179,34 @@ for case in case_studies_to_run
     asset_df[asset_df.unit_commitment .== true, :unit_commitment_method] .= case
 
     CSV.write("$input_folder/asset.csv", asset_df)
+    return nothing
+end
 
-    asset_milestone_df = DataFrame(CSV.File("$input_folder/asset-milestone.csv"))
-    asset_milestone_df[asset_milestone_df.asset .== "demand", :peak_demand] .= PEAK_DEMAND
+input_fold = joinpath(pwd(), "$experiment_inputs_dir")
 
-    asset_comm_df = DataFrame(CSV.File("$input_folder/asset-commission.csv"))
-    asset_comm_df[asset_milestone_df.asset .== "OnWind", :investment_limit] .= WIND_LIMIT
-    asset_comm_df[asset_milestone_df.asset .== "OffWind", :investment_limit] .= WIND_LIMIT
-    asset_comm_df[asset_milestone_df.asset .== "Solar", :investment_limit] .= SOLAR_LIMIT
+asset_milestone_df = DataFrame(CSV.File("$input_fold/asset-milestone.csv"))
+asset_milestone_df[asset_milestone_df.asset .== "demand", :peak_demand] .= PEAK_DEMAND
 
-    CSV.write("$input_folder/asset-milestone.csv", asset_milestone_df)
-    CSV.write("$input_folder/asset-commission.csv", asset_comm_df)
+asset_comm_df = DataFrame(CSV.File("$input_fold/asset-commission.csv"))
+asset_comm_df[asset_milestone_df.asset .== "OnWind", :investment_limit] .= WIND_LIMIT
+asset_comm_df[asset_milestone_df.asset .== "OffWind", :investment_limit] .= WIND_LIMIT
+asset_comm_df[asset_milestone_df.asset .== "Solar", :investment_limit] .= SOLAR_LIMIT
+
+CSV.write("$input_fold/asset-milestone.csv", asset_milestone_df)
+CSV.write("$input_fold/asset-commission.csv", asset_comm_df)
+
+for case in case_studies_to_run
+    input_folder = joinpath(pwd(), "$experiment_inputs_dir")
 
     # Benchmark of creating the model
     if "model_creation_time" in metrics
         SUITE["create_model"]["$case"] = @benchmarkable begin
             create_model!(energy_problem)
         end samples = create_model_num_samples evals = create_model_num_evals seconds =
-            create_model_timeout setup =
+            create_model_timeout setup = begin
+            prepare_input_files($case)
             (energy_problem = EnergyProblem(input_setup($input_folder)))
+        end
     end
 
     if "model_solve_time" in metrics
@@ -207,6 +216,7 @@ for case in case_studies_to_run
             solve_model!(energy_problem)
         end samples = run_model_num_samples evals = run_model_num_evals seconds =
             run_model_timeout setup = begin
+            prepare_input_files($case)
             energy_problem = create_model!(EnergyProblem(input_setup($input_folder)))
 
             if use_random_seeds
