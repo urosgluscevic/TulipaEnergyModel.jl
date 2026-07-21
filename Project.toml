@@ -1,7 +1,7 @@
 name = "TulipaEnergyModel"
 uuid = "5d7bd171-d18e-45a5-9111-f1f11ac5d04d"
-authors = ["Abel Soares Siqueira <abel.s.siqueira@gmail.com>", "Diego A. Tejada-Arango <diego.tejadaarango@tno.nl>", "Germán Morales-España <german.morales@tno.nl>", "Grigory Neustroev <G.Neustroev@tudelft.nl>", "Juha Kiviluoma <Juha.Kiviluoma@vtt.fi>", "Lauren Clisby <lauren.clisby@tno.nl>", "Maaike Elgersma <m.b.elgersma@tudelft.nl>", "Ni Wang <ni.wang@tno.nl>", "Suvayu Ali <s.ali@esciencecenter.nl>", "Zhi Gao <z.gao1@uu.nl>"]
 version = "0.18.0"
+authors = ["Abel Soares Siqueira <abel.s.siqueira@gmail.com>", "Diego A. Tejada-Arango <diego.tejadaarango@tno.nl>", "Germán Morales-España <german.morales@tno.nl>", "Grigory Neustroev <G.Neustroev@tudelft.nl>", "Juha Kiviluoma <Juha.Kiviluoma@vtt.fi>", "Lauren Clisby <lauren.clisby@tno.nl>", "Maaike Elgersma <m.b.elgersma@tudelft.nl>", "Ni Wang <ni.wang@tno.nl>", "Suvayu Ali <s.ali@esciencecenter.nl>", "Zhi Gao <z.gao1@uu.nl>"]
 
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
@@ -37,7 +37,7 @@ OrderedCollections = "1"
 SparseArrays = "1"
 Statistics = "1"
 TOML = "1"
-TimerOutputs = "0.5"
+TimerOutputs = "0.5, 1"
 TulipaIO = "0.5"
 julia = "1.10"
 
